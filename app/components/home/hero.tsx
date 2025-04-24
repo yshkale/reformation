@@ -4,7 +4,9 @@ export const Hero = () => {
   return (
     <div
       className="w-full h-[60vh] lg:h-[60vh] flex flex-col gap-5 items-center justify-center bg-neutral-950 text-white py-20 bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: `url("/images/hero.jpg")` }}
+      style={{
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url("/images/hero.jpg")`,
+      }}
     >
       <p className="uppercase tracking-widest font-light text-sm">
         Express Yourself

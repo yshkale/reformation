@@ -12,7 +12,7 @@ export const Header = () => {
         height={120}
       />
 
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-4">
         <Search size={20} className="cursor-pointer" />
         <ShoppingBag size={20} className="cursor-pointer" />
       </div>
