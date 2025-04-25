@@ -11,7 +11,7 @@ export const Hero = () => {
       <p className="uppercase tracking-widest font-light text-sm">
         Express Yourself
       </p>
-      <h3 className="text-3xl lg:text-4xl font-bold tracking-wide uppercase">
+      <h3 className="text-4xl font-bold tracking-wide uppercase">
         Loved For Style
       </h3>
       <p className="text-sm">

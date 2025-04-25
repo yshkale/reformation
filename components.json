@@ -12,10 +12,10 @@
   },
   "aliases": {
     "components": "@/app/components",
-    "utils": "@/app/lib/utils",
+    "utils": "@/app/components/lib/utils",
     "ui": "@/app/components/ui",
-    "lib": "@/app/lib",
-    "hooks": "@/app/hooks"
+    "lib": "@/app/components/lib",
+    "hooks": "@/app/components/hooks"
   },
   "iconLibrary": "lucide"
 }

@@ -4,6 +4,10 @@ import { Hero } from "./components/home/hero";
 import { IntroText } from "./components/home/intro-text";
 import { CollectionOverview } from "./components/home/collection-overview";
 import { CollectionBanner } from "./components/home/collection-banner";
+import { MarketingBanner } from "./components/home/marketing-banner";
+import { Testimonial } from "./components/home/testimonial";
+import { FeatureIcons } from "./components/home/feature-icons";
+import { Footer } from "./components/home/footer";
 
 export default function Home() {
   return (
@@ -11,6 +15,7 @@ export default function Home() {
       <Banner />
       <Header />
       <Hero />
+
       <section className="mx-3">
         <IntroText
           title="New Arrivals"
@@ -32,6 +37,21 @@ export default function Home() {
           />
         </div>
       </section>
+
+      <MarketingBanner
+        image={"/images/marketing-banner-1.webp"}
+        text={"HAUTE COUTURE READY TO WEAR ICONIC SUMMER READY"}
+      />
+
+      <section className="mx-3">
+        <Testimonial />
+      </section>
+
+      <section className="border-t border-neutral-300">
+        <FeatureIcons />
+      </section>
+
+      <Footer />
     </main>
   );
 }

@@ -20,7 +20,6 @@ export const CollectionBanner = ({
         backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${bannerImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        opacity: "",
       }}
       className="w-full h-[50vh] object-cover bg-center bg-no-repeat"
     >
