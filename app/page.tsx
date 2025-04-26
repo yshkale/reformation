@@ -8,8 +8,13 @@ import { MarketingBanner } from "./components/home/marketing-banner";
 import { Testimonial } from "./components/home/testimonial";
 import { FeatureIcons } from "./components/home/feature-icons";
 import { Footer } from "./components/home/footer";
+import { getAllProducts } from "./lib/queries/products";
+
+const products = await getAllProducts();
 
 export default function Home() {
+  console.log(products);
+
   return (
     <main className="">
       <Banner />
@@ -21,7 +26,9 @@ export default function Home() {
           title="New Arrivals"
           description="Discover the latest ready-to-wear dresses."
         />
-        <CollectionOverview collectionId={"274"} />
+
+        <CollectionOverview products={products} />
+
         <div className="space-y-8 my-10">
           <CollectionBanner
             collectionId={"234"}
