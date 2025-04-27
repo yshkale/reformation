@@ -17,4 +17,5 @@ export interface Product {
   variants?: Variant[];
   images?: string[];
   thumbnail?: string;
+  slug?: string;
 }

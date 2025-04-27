@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { cn } from "../../lib/utils";
 import { Star } from "lucide-react";
+import Link from "next/link";
 
 interface ProductOverviewProps {
   thumbnail?: string;
@@ -8,6 +9,7 @@ interface ProductOverviewProps {
   price?: string;
   comparePrice?: string;
   rating?: number;
+  slug?: string;
 }
 
 export const ProductOverview = ({
@@ -16,9 +18,10 @@ export const ProductOverview = ({
   comparePrice,
   rating,
   thumbnail,
+  slug,
 }: ProductOverviewProps) => {
   return (
-    <div className="space-y-2 cursor-pointer">
+    <Link href={`/product/${slug}`} className="space-y-2 cursor-pointer">
       <Image
         src={thumbnail || ""}
         alt="product thumbnail image"
@@ -58,6 +61,6 @@ export const ProductOverview = ({
           </div>
         )}
       </div>
-    </div>
+    </Link>
   );
 };

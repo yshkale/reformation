@@ -20,6 +20,7 @@ export const CollectionOverview = ({ products }: CollectionOverviewProps) => {
                 price={product.price}
                 comparePrice={product.comparePrice}
                 rating={product.rating}
+                slug={product.slug}
               />
             );
           })}
