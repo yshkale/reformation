@@ -8,6 +8,8 @@ import { VariantSelector } from "../components/VariantSelector";
 import { QuantitySelector } from "../components/QuantitySelector";
 import { Button } from "../../components/ui/button";
 import { Footer } from "../../components/home/footer";
+import Image from "next/image";
+import { SocialFeed } from "../components/SocialFeed";
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const product = await getProductBySlug(params.slug);
@@ -94,6 +96,31 @@ export default async function Page({ params }: { params: { slug: string } }) {
           />
           <Linkedin className="fill-neutral-200" strokeWidth={1.5} size={18} />
         </div>
+
+        <div className="mt-14">
+          <div className="relative h-[30rem]">
+            <Image
+              src={"/images/marketing-banner-product-1.webp"}
+              alt="marketing image"
+              width={500}
+              height={500}
+              quality={100}
+              className="object-cover object-center w-full h-full"
+            />
+          </div>
+
+          <div className="p-6 space-y-2">
+            <h3 className="text-3xl font-semibold">Elegance Redefined.</h3>
+            <p className="text-sm text-neutral-800">
+              Elevate your evening with the timeless elegance of the Luna Silk
+              Evening Gown. Crafted from luxurious silk, this gown drapes
+              beautifully, accentuating your silhouette with a sophisticated
+              charm.
+            </p>
+          </div>
+        </div>
+
+        <SocialFeed />
       </div>
 
       <Footer />

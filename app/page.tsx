@@ -13,8 +13,6 @@ import { getAllProducts } from "./lib/queries/products";
 const products = await getAllProducts();
 
 export default function Home() {
-  console.log(products);
-
   return (
     <main className="">
       <Banner />

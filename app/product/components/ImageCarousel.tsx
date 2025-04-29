@@ -36,7 +36,7 @@ export const ImageCarousel = ({ images }: ImageCarouselProps) => {
   }, [api]);
 
   return (
-    <div className="flex flex-col gap-2 mt-7">
+    <div className="flex flex-col gap-2 mt-5">
       <Carousel setApi={setApi}>
         <CarouselContent>
           {images?.length > 0 &&
