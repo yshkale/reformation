@@ -20,8 +20,6 @@ export default async function Page({ params }: { params: { slug: string } }) {
     { name: product?.name || params.slug, href: `/product/${params.slug}` },
   ];
 
-  console.log(product);
-
   return (
     <main>
       <Header />
