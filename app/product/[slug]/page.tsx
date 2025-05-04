@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import { Facebook, InstagramIcon, Linkedin, Star, Twitter } from "lucide-react";
 import Breadcrumb from "../../components/Breadcrumb";
 import { Header } from "../../components/home/header";
-import { getProductBySlug } from "../../lib/queries/products";
 import { cn } from "../../lib/utils";
 import { ImageCarousel } from "../components/ImageCarousel";
 import { VariantSelector } from "../components/VariantSelector";
@@ -10,15 +12,80 @@ import { Button } from "../../components/ui/button";
 import { Footer } from "../../components/home/footer";
 import Image from "next/image";
 import { SocialFeed } from "../components/SocialFeed";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { addToCart, getProductBySlug } from "../../store/App/app.slice";
+import { useParams } from "next/navigation";
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const product = await getProductBySlug(params.slug);
+interface SelectedVariant {
+  variantName: string;
+  variantOption: string;
+}
+
+export default function Page() {
+  const dispatch = useDispatch();
+  const params = useParams();
+
+  const slug: any = params.slug;
+
+  const product = useSelector((state: any) => state.app.currentProduct);
 
   // Build the breadcrumb links dynamically
   const links = [
     { name: "Home", href: "/" },
-    { name: product?.name || params.slug, href: `/product/${params.slug}` },
+    { name: product?.name || slug, href: `/product/${slug}` },
   ];
+
+  const [selectedVariants, setSelectedVariants] = useState<SelectedVariant[]>(
+    []
+  );
+  const [quantity, setQuantity] = useState<number>(1);
+
+  useEffect(() => {
+    if (slug) {
+      dispatch(getProductBySlug(slug));
+    }
+  }, [dispatch, slug]);
+
+  const handleAddToCart = () => {
+    dispatch(
+      addToCart({
+        productId: product._id,
+        quantity,
+        variants: selectedVariants,
+        productInfo: {
+          name: product.name,
+          price: product.price,
+          compareWithPrice: product.comparePrice,
+          thumbnail: product.thumbnail,
+        },
+      })
+    );
+  };
+
+  const handleVariantClick = (variantName: string, variantOption: string) => {
+    if (!variantName || !variantOption) return;
+
+    setSelectedVariants((prev) => {
+      // Create a copy of the previous state
+      const updatedVariants = [...prev];
+
+      // Find if we already have a selection for this variant type
+      const existingIndex = updatedVariants.findIndex(
+        (v) => v.variantName === variantName
+      );
+
+      if (existingIndex !== -1) {
+        // Update the existing selection
+        updatedVariants[existingIndex] = { variantName, variantOption };
+      } else {
+        // Add a new selection
+        updatedVariants.push({ variantName, variantOption });
+      }
+
+      return updatedVariants;
+    });
+  };
 
   return (
     <main>
@@ -70,12 +137,19 @@ export default async function Page({ params }: { params: { slug: string } }) {
         <p className="mt-4 text-sm">{product?.description}</p>
 
         <div className="mt-7 space-y-5">
-          <VariantSelector variants={product?.variants} />
+          <VariantSelector
+            variants={product?.variants}
+            handleVariantClick={handleVariantClick}
+            selectedVariants={selectedVariants}
+          />
         </div>
 
         <div className="mt-10 flex items-center space-x-2">
-          <QuantitySelector />
-          <Button className="flex-grow uppercase text-sm tracking-widest bg-transparent text-black border py-4.5 border-neutral-900 hover:bg-black hover:text-white cursor-pointer">
+          <QuantitySelector quantity={quantity} setQuantity={setQuantity} />
+          <Button
+            className="flex-grow uppercase text-sm tracking-widest bg-transparent text-black border py-4.5 border-neutral-900 hover:bg-black hover:text-white cursor-pointer"
+            onClick={handleAddToCart}
+          >
             Add to Cart
           </Button>
         </div>

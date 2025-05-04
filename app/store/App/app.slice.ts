@@ -1,10 +1,17 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ActionState, AsyncState } from "../../helper/constants";
+import { Product } from "../../types/product";
+import { Actions } from "./app.saga";
+
+export interface SelectedVariant {
+  variantName: string;
+  variantOption: string;
+}
 
 export interface CartItem {
   productId: string;
   quantity: number;
-  variantName?: string;
-  variantOption?: string;
+  variants?: SelectedVariant[];
   productInfo?: {
     name: string;
     price: string;
@@ -17,12 +24,20 @@ export interface AppState {
   cartState: "open" | "closed";
   cartItems: CartItem[];
   cartTotal: number;
+
+  currentProduct: Product | null;
+  currentProductApiStatus: string;
+  currentProductError: string;
 }
 
 const initialState: AppState = {
   cartState: "closed",
   cartItems: [],
   cartTotal: 0,
+
+  currentProduct: null,
+  currentProductApiStatus: AsyncState.IDLE,
+  currentProductError: "",
 };
 
 const slice = createSlice({
@@ -34,26 +49,74 @@ const slice = createSlice({
     },
 
     addToCart: (state, action: PayloadAction<CartItem>) => {
-      const { productId, variantName, variantOption, quantity } =
-        action.payload;
+      const { productId, variants, quantity } = action.payload;
+
+      // Helper function to compare variants arrays
+      const areVariantsEqual = (
+        variantsA?: SelectedVariant[],
+        variantsB?: SelectedVariant[]
+      ) => {
+        // If both are undefined or empty, they are equal
+        if (!variantsA?.length && !variantsB?.length) return true;
+        // If only one is undefined/empty, they are not equal
+        if (!variantsA?.length || !variantsB?.length) return false;
+        // If counts don't match, they are not equal
+        if (variantsA.length !== variantsB.length) return false;
+
+        // Check if every variant in A has a matching variant in B
+        return variantsA.every((variantA) => {
+          return variantsB.some(
+            (variantB) =>
+              variantB.variantName === variantA.variantName &&
+              variantB.variantOption === variantA.variantOption
+          );
+        });
+      };
 
       const existingItemIndex = state.cartItems.findIndex(
         (item) =>
           item.productId === productId &&
-          item.variantName === variantName &&
-          item.variantOption === variantOption
+          areVariantsEqual(item.variants, variants)
       );
 
       if (existingItemIndex !== -1) {
-        //update quantity
+        // Update quantity
         state.cartItems[existingItemIndex].quantity += quantity || 1;
       } else {
         state.cartItems.push(action.payload);
       }
     },
+
+    resetProductState: (state) => {
+      state.currentProduct = null;
+      state.currentProductApiStatus = AsyncState.IDLE;
+      state.currentProductError = "";
+    },
+  },
+  extraReducers: (builder) => {
+    // Get Product By Slug
+    builder.addCase(Actions.getProductBySlug + ActionState.PENDING, (state) => {
+      state.currentProductApiStatus = AsyncState.PENDING;
+    });
+    builder.addCase(
+      Actions.getProductBySlug + ActionState.FULFILLED,
+      (state, action: PayloadAction<Product>) => {
+        state.currentProduct = action.payload;
+        state.currentProductApiStatus = AsyncState.FULFILLED;
+      }
+    );
+    builder.addCase(
+      Actions.getProductBySlug + ActionState.REJECTED,
+      (state, action: PayloadAction<string>) => {
+        state.currentProductError = action.payload;
+        state.currentProductApiStatus = AsyncState.REJECTED;
+      }
+    );
   },
 });
 
-export const { setCartState, addToCart } = slice.actions;
+export const { setCartState, addToCart, resetProductState } = slice.actions;
+
+export const getProductBySlug = createAction<string>(Actions.getProductBySlug);
 
 export const AppReducer = slice.reducer;

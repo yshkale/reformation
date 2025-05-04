@@ -4,14 +4,15 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ShoppingBasketIcon, XIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { setCartState } from "../store/App/app.slice";
+import { CartItem, setCartState } from "../store/App/app.slice";
 import { Button } from "./ui/button";
+import { CartItemRenderer } from "./CartItemRenderer";
 
 export const Cart = () => {
   const dispatch = useDispatch();
 
   const cartState = useSelector((state: any) => state.app.cartState);
-  const cart = useSelector((state: any) => state.app.cart);
+  const cart = useSelector((state: any) => state.app.cartItems);
 
   const closeCart = () => {
     dispatch(setCartState("closed"));
@@ -32,17 +33,26 @@ export const Cart = () => {
             <XIcon size={19} onClick={closeCart} className="cursor-pointer" />
           </div>
 
-          {cart.length === 0 && (
-            <div className="h-full w-full flex flex-col space-y-4 items-center justify-center">
-              <ShoppingBasketIcon strokeWidth={1} size={60} />
+          <section className="m-6">
+            {cart?.length === 0 ? (
+              <div className="h-full w-full flex flex-col space-y-4 items-center justify-center">
+                <ShoppingBasketIcon strokeWidth={1} size={60} />
 
-              <p className="text-sm">Your cart is currently empty.</p>
+                <p className="text-sm">Your cart is currently empty.</p>
 
-              <Button className="uppercase font-light text-xs tracking-wide">
-                Start Shopping
-              </Button>
-            </div>
-          )}
+                <Button className="uppercase font-light text-xs tracking-wide">
+                  Start Shopping
+                </Button>
+              </div>
+            ) : (
+              cart?.map((cartItem: CartItem) => (
+                <CartItemRenderer
+                  cartItem={cartItem}
+                  key={cartItem.productId}
+                />
+              ))
+            )}
+          </section>
         </motion.div>
       )}
     </AnimatePresence>
