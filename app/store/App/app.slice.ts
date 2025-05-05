@@ -87,6 +87,43 @@ const slice = createSlice({
       }
     },
 
+    removeFromCart: (
+      state,
+      action: PayloadAction<{ productId: string; variants?: SelectedVariant[] }>
+    ) => {
+      const { productId, variants } = action.payload;
+
+      // Helper function to compare variants arrays (reuse the one from addToCart)
+      const areVariantsEqual = (
+        variantsA?: SelectedVariant[],
+        variantsB?: SelectedVariant[]
+      ) => {
+        // If both are undefined or empty, they are equal
+        if (!variantsA?.length && !variantsB?.length) return true;
+        // If only one is undefined/empty, they are not equal
+        if (!variantsA?.length || !variantsB?.length) return false;
+        // If counts don't match, they are not equal
+        if (variantsA.length !== variantsB.length) return false;
+        // Check if every variant in A has a matching variant in B
+        return variantsA.every((variantA) => {
+          return variantsB.some(
+            (variantB) =>
+              variantB.variantName === variantA.variantName &&
+              variantB.variantOption === variantA.variantOption
+          );
+        });
+      };
+
+      // Filter out the item that matches both productId and variants
+      state.cartItems = state.cartItems.filter(
+        (item) =>
+          !(
+            item.productId === productId &&
+            areVariantsEqual(item.variants, variants)
+          )
+      );
+    },
+
     resetProductState: (state) => {
       state.currentProduct = null;
       state.currentProductApiStatus = AsyncState.IDLE;
@@ -115,7 +152,8 @@ const slice = createSlice({
   },
 });
 
-export const { setCartState, addToCart, resetProductState } = slice.actions;
+export const { setCartState, addToCart, removeFromCart, resetProductState } =
+  slice.actions;
 
 export const getProductBySlug = createAction<string>(Actions.getProductBySlug);
 

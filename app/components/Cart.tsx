@@ -4,12 +4,19 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ShoppingBasketIcon, XIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { CartItem, setCartState } from "../store/App/app.slice";
+import {
+  CartItem,
+  removeFromCart,
+  SelectedVariant,
+  setCartState,
+} from "../store/App/app.slice";
 import { Button } from "./ui/button";
 import { CartItemRenderer } from "./CartItemRenderer";
+import { useRouter } from "next/navigation";
 
 export const Cart = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const cartState = useSelector((state: any) => state.app.cartState);
   const cart = useSelector((state: any) => state.app.cartItems);
@@ -18,42 +25,73 @@ export const Cart = () => {
     dispatch(setCartState("closed"));
   };
 
+  const handleCartItemRemove = (
+    productId: string,
+    variants: SelectedVariant[]
+  ) => {
+    dispatch(
+      removeFromCart({
+        productId,
+        variants,
+      })
+    );
+  };
+
+  const handleContinueShopping = () => {
+    router.push("/");
+    closeCart();
+  };
+
   return (
     <AnimatePresence>
       {cartState !== "closed" && (
-        <motion.div
-          className="fixed top-0 right-0 w-7/8 h-full bg-white shadow-lg z-50 border-l border-t border-neutral-200"
-          initial={{ x: "100%" }}
-          animate={{ x: 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          exit={{ x: "100%" }}
-        >
-          <div className="p-6 border-b border-neutral-200 flex justify-between items-center">
-            <h3 className="uppercase">Cart</h3>
-            <XIcon size={19} onClick={closeCart} className="cursor-pointer" />
-          </div>
+        <>
+          {/* Overlay with blur effect */}
+          <motion.div
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs z-40"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeCart}
+          />
 
-          <section className="m-6">
-            {cart?.length === 0 ? (
-              <div className="h-full w-full flex flex-col space-y-4 items-center justify-center">
-                <ShoppingBasketIcon strokeWidth={1} size={60} />
+          {/* Cart sidebar */}
+          <motion.div
+            className="fixed top-0 right-0 w-7/8 h-full bg-white shadow-lg z-50 border-l border-t border-neutral-200"
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            exit={{ x: "100%" }}
+          >
+            <div className="p-6 border-b border-neutral-200 flex justify-between items-center">
+              <h3 className="uppercase">Cart</h3>
+              <XIcon size={19} onClick={closeCart} className="cursor-pointer" />
+            </div>
+            <section className="m-6 h-full">
+              {cart?.length === 0 ? (
+                <div className="w-full flex flex-col space-y-4 items-center justify-center mt-60">
+                  <ShoppingBasketIcon strokeWidth={1} size={60} />
+                  <p className="text-sm">Your cart is currently empty.</p>
 
-                <p className="text-sm">Your cart is currently empty.</p>
-
-                <Button className="uppercase font-light text-xs tracking-wide">
-                  Start Shopping
-                </Button>
-              </div>
-            ) : (
-              cart?.map((cartItem: CartItem) => (
-                <CartItemRenderer
-                  cartItem={cartItem}
-                  key={cartItem.productId}
-                />
-              ))
-            )}
-          </section>
-        </motion.div>
+                  <Button
+                    className="uppercase font-light text-xs tracking-wide"
+                    onClick={handleContinueShopping}
+                  >
+                    Start Shopping
+                  </Button>
+                </div>
+              ) : (
+                cart?.map((cartItem: CartItem) => (
+                  <CartItemRenderer
+                    cartItem={cartItem}
+                    key={cartItem.productId}
+                    handleCartItemRemove={handleCartItemRemove}
+                  />
+                ))
+              )}
+            </section>
+          </motion.div>
+        </>
       )}
     </AnimatePresence>
   );

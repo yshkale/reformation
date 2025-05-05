@@ -1,13 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Search, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCartState } from "../../store/App/app.slice";
 
 export const Header = () => {
   const dispatch = useDispatch();
+
+  const cart = useSelector((state: any) => state.app.cartItems);
 
   const openCart = () => {
     dispatch(setCartState("open"));
@@ -26,7 +29,21 @@ export const Header = () => {
 
       <div className="flex items-center space-x-4">
         <Search size={20} className="cursor-pointer" strokeWidth={2} />
-        <ShoppingBag size={20} className="cursor-pointer" onClick={openCart} />
+        <div className="relative">
+          <ShoppingBag
+            size={20}
+            className="cursor-pointer"
+            onClick={openCart}
+          />
+          {cart?.length !== 0 && (
+            <div className="absolute top-[0.80rem] -right-0.5">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-neutral-800 opacity-75"></span>
+                <span className="relative inline-flex size-2 rounded-full bg-neutral-950"></span>
+              </span>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

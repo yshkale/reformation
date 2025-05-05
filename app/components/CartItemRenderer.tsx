@@ -1,15 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from "next/image";
 import { CartItem } from "../store/App/app.slice";
-import { Minus, Plus, Trash2Icon } from "lucide-react";
-import { cn } from "../lib/utils";
 
 interface CartItemRenderer {
   cartItem: CartItem;
+  handleCartItemRemove: any;
 }
 
-export const CartItemRenderer = ({ cartItem }: CartItemRenderer) => {
+export const CartItemRenderer = ({
+  cartItem,
+  handleCartItemRemove,
+}: CartItemRenderer) => {
   return (
-    <div key={cartItem.productId} className="flex space-x-4 space-y-12">
+    <div key={cartItem.productId} className="flex space-x-5 space-y-12">
       <Image
         src={cartItem.productInfo?.thumbnail || ""}
         width={200}
@@ -20,9 +23,12 @@ export const CartItemRenderer = ({ cartItem }: CartItemRenderer) => {
 
       <div className="flex flex-col gap-1">
         <div>
-          <h4 className="text-sm font-semibold">
-            {cartItem.productInfo?.name}
-          </h4>
+          <div className="flex space-x-2 items-center">
+            <h4 className="text-sm font-semibold">
+              {cartItem.productInfo?.name}
+            </h4>
+            <p className="text-xs text-neutral-600">x {cartItem.quantity}</p>
+          </div>
           <p className="text-sm text-neutral-700">
             {cartItem.productInfo?.price}
           </p>
@@ -47,20 +53,13 @@ export const CartItemRenderer = ({ cartItem }: CartItemRenderer) => {
           })}
         </div>
 
-        <div className="flex items-center space-x-2">
-          <div className="border border-neutral-300 flex items-center space-x-4 w-max px-3 py-1.5">
-            <Minus
-              size={12}
-              className={`${cn(
-                cartItem.quantity === 1 &&
-                  "pointer-events-none text-neutral-500"
-              )}`}
-            />
-            <span className="text-xs font-medium">{cartItem.quantity}</span>
-            <Plus size={12} />
-          </div>
-
-          <Trash2Icon size={15} className="text-red-700" />
+        <div
+          className="text-neutral-600 border-b border-neutral-300 text-xs w-fit -mt-1 cursor-pointer"
+          onClick={() =>
+            handleCartItemRemove(cartItem.productId, cartItem.variants)
+          }
+        >
+          Remove
         </div>
       </div>
     </div>

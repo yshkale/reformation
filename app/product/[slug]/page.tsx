@@ -14,7 +14,11 @@ import Image from "next/image";
 import { SocialFeed } from "../components/SocialFeed";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { addToCart, getProductBySlug } from "../../store/App/app.slice";
+import {
+  addToCart,
+  getProductBySlug,
+  setCartState,
+} from "../../store/App/app.slice";
 import { useParams } from "next/navigation";
 
 interface SelectedVariant {
@@ -47,6 +51,17 @@ export default function Page() {
     }
   }, [dispatch, slug]);
 
+  // Initialize selected variants with first option of each variant
+  useEffect(() => {
+    if (product?.variants?.length > 0) {
+      const initialVariants = product.variants.map((variant: any) => ({
+        variantName: variant.variantName,
+        variantOption: variant.variantOptions[0] || "",
+      }));
+      setSelectedVariants(initialVariants);
+    }
+  }, [product]);
+
   const handleAddToCart = () => {
     dispatch(
       addToCart({
@@ -61,6 +76,8 @@ export default function Page() {
         },
       })
     );
+
+    dispatch(setCartState("open"));
   };
 
   const handleVariantClick = (variantName: string, variantOption: string) => {
