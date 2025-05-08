@@ -13,6 +13,7 @@ import {
 import { Button } from "./ui/button";
 import { CartItemRenderer } from "./CartItemRenderer";
 import { useRouter } from "next/navigation";
+import { Checkbox } from "./ui/checkbox";
 
 export const Cart = () => {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ export const Cart = () => {
 
   const cartState = useSelector((state: any) => state.app.cartState);
   const cart = useSelector((state: any) => state.app.cartItems);
+  const cartTotal = useSelector((state: any) => state.app.cartTotal);
 
   const closeCart = () => {
     dispatch(setCartState("closed"));
@@ -42,6 +44,11 @@ export const Cart = () => {
     closeCart();
   };
 
+  const handleCheckout = () => {
+    router.push("/checkout");
+    closeCart();
+  };
+
   return (
     <AnimatePresence>
       {cartState !== "closed" && (
@@ -57,7 +64,7 @@ export const Cart = () => {
 
           {/* Cart sidebar */}
           <motion.div
-            className="fixed top-0 right-0 w-7/8 h-full bg-white shadow-lg z-50 border-l border-t border-neutral-200"
+            className="fixed top-0 right-0 w-7/8 h-full bg-white shadow-lg z-50 border-l border-t border-neutral-200 flex flex-col"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
@@ -67,7 +74,7 @@ export const Cart = () => {
               <h3 className="uppercase">Cart</h3>
               <XIcon size={19} onClick={closeCart} className="cursor-pointer" />
             </div>
-            <section className="m-6 h-full">
+            <section className="m-6 h-max mb-auto">
               {cart?.length === 0 ? (
                 <div className="w-full flex flex-col space-y-4 items-center justify-center mt-60">
                   <ShoppingBasketIcon strokeWidth={1} size={60} />
@@ -90,6 +97,24 @@ export const Cart = () => {
                 ))
               )}
             </section>
+            {cart.length !== 0 && (
+              <section className="text-xs text-center space-y-2 mx-6 mb-8">
+                <p>Taxes and shipping calculated at checkout</p>
+                <div className="flex items-center space-x-2 justify-center">
+                  <Checkbox />
+                  <p>
+                    I agree with the{" "}
+                    <span className="border-b border-neutral-400">
+                      terms and conditions
+                    </span>
+                  </p>
+                </div>
+
+                <Button className="w-full mt-3" onClick={handleCheckout}>
+                  Checkout &nbsp; &middot; &nbsp; ${cartTotal}
+                </Button>
+              </section>
+            )}
           </motion.div>
         </>
       )}

@@ -2,6 +2,7 @@ import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ActionState, AsyncState } from "../../helper/constants";
 import { Product } from "../../types/product";
 import { Actions } from "./app.saga";
+import { calculateCartTotal } from "../../helper/calculateCartTotal";
 
 export interface SelectedVariant {
   variantName: string;
@@ -85,6 +86,9 @@ const slice = createSlice({
       } else {
         state.cartItems.push(action.payload);
       }
+
+      // Update cart total after modifying items
+      state.cartTotal = calculateCartTotal(state.cartItems);
     },
 
     removeFromCart: (
@@ -122,6 +126,13 @@ const slice = createSlice({
             areVariantsEqual(item.variants, variants)
           )
       );
+
+      // Update cart total after modifying items
+      state.cartTotal = calculateCartTotal(state.cartItems);
+    },
+
+    updateCartTotal: (state) => {
+      state.cartTotal = calculateCartTotal(state.cartItems);
     },
 
     resetProductState: (state) => {
@@ -152,8 +163,13 @@ const slice = createSlice({
   },
 });
 
-export const { setCartState, addToCart, removeFromCart, resetProductState } =
-  slice.actions;
+export const {
+  setCartState,
+  addToCart,
+  removeFromCart,
+  resetProductState,
+  updateCartTotal,
+} = slice.actions;
 
 export const getProductBySlug = createAction<string>(Actions.getProductBySlug);
 
