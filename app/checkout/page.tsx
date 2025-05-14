@@ -1,12 +1,7 @@
 "use client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  AppWindowMacIcon,
-  CircleCheck,
-  MonitorCheck,
-  ShoppingBag,
-} from "lucide-react";
+import { CircleCheck, MonitorCheck, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import { OrderSummary } from "./components/OrderSummary";
 import { useSelector } from "react-redux";
