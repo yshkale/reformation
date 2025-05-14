@@ -36,7 +36,7 @@ export const OrderSummary = ({ cartItems, cartTotal }: OrderSummaryProps) => {
     <section className="border-y border-neutral-300">
       {/* Header - always visible */}
       <div
-        className="flex justify-between items-center cursor-pointer bg-neutral-200 px-4 py-6"
+        className="flex justify-between items-center cursor-pointer bg-neutral-200 px-4 py-5"
         onClick={toggleExpand}
       >
         <div className="flex items-center space-x-2 text-sm ">
