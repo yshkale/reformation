@@ -13,7 +13,7 @@ interface OrderSummaryProps {
 
 export const OrderSummary = ({ cartItems, cartTotal }: OrderSummaryProps) => {
   // State to track if the accordion is expanded
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   // Order data (hardcoded for now, will be props later)
   const orderData = {

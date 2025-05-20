@@ -21,6 +21,33 @@ export interface CartItem {
   };
 }
 
+// New interfaces for customer data
+export interface CustomerContact {
+  email: string;
+  receiveOffers: boolean;
+}
+
+export interface CustomerDelivery {
+  country: string;
+  firstName: string;
+  lastName: string;
+  address: string;
+  city: string;
+  state: string;
+  pinCode: string;
+  phone: string;
+  saveInfo: boolean;
+}
+
+export interface ShippingMethod {
+  method: string;
+  cost: string;
+}
+
+export interface PaymentMethod {
+  method: string;
+}
+
 export interface AppState {
   cartState: "open" | "closed";
   cartItems: CartItem[];
@@ -29,6 +56,12 @@ export interface AppState {
   currentProduct: Product | null;
   currentProductApiStatus: string;
   currentProductError: string;
+
+  // Customer data
+  customerContact: CustomerContact;
+  customerDelivery: CustomerDelivery;
+  shippingMethod: ShippingMethod;
+  paymentMethod: PaymentMethod;
 }
 
 const initialState: AppState = {
@@ -39,6 +72,30 @@ const initialState: AppState = {
   currentProduct: null,
   currentProductApiStatus: AsyncState.IDLE,
   currentProductError: "",
+
+  // Initialize customer data
+  customerContact: {
+    email: "",
+    receiveOffers: false,
+  },
+  customerDelivery: {
+    country: "",
+    firstName: "",
+    lastName: "",
+    address: "",
+    city: "",
+    state: "",
+    pinCode: "",
+    phone: "",
+    saveInfo: false,
+  },
+  shippingMethod: {
+    method: "Express Shipping",
+    cost: "FREE",
+  },
+  paymentMethod: {
+    method: "Razorpay Secure",
+  },
 };
 
 const slice = createSlice({
@@ -135,10 +192,47 @@ const slice = createSlice({
       state.cartTotal = calculateCartTotal(state.cartItems);
     },
 
+    resetCart: (state) => {
+      state.cartItems = [];
+      state.cartTotal = 0;
+    },
+
     resetProductState: (state) => {
       state.currentProduct = null;
       state.currentProductApiStatus = AsyncState.IDLE;
       state.currentProductError = "";
+    },
+
+    // Customer contact data actions
+    updateCustomerContact: (
+      state,
+      action: PayloadAction<Partial<CustomerContact>>
+    ) => {
+      state.customerContact = {
+        ...state.customerContact,
+        ...action.payload,
+      };
+    },
+
+    // Customer delivery data actions
+    updateCustomerDelivery: (
+      state,
+      action: PayloadAction<Partial<CustomerDelivery>>
+    ) => {
+      state.customerDelivery = {
+        ...state.customerDelivery,
+        ...action.payload,
+      };
+    },
+
+    // Shipping method actions
+    updateShippingMethod: (state, action: PayloadAction<ShippingMethod>) => {
+      state.shippingMethod = action.payload;
+    },
+
+    // Payment method actions
+    updatePaymentMethod: (state, action: PayloadAction<PaymentMethod>) => {
+      state.paymentMethod = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -169,6 +263,11 @@ export const {
   removeFromCart,
   resetProductState,
   updateCartTotal,
+  updateCustomerContact,
+  updateCustomerDelivery,
+  updateShippingMethod,
+  updatePaymentMethod,
+  resetCart,
 } = slice.actions;
 
 export const getProductBySlug = createAction<string>(Actions.getProductBySlug);
