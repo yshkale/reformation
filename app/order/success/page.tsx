@@ -12,15 +12,15 @@ import {
   Printer,
 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Separator } from "../../components/ui/separator";
-import { resetCart } from "../../store/App/app.slice";
+import { resetCart, resetOrderState } from "../../store/App/app.slice";
 
 export default function Page() {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const searchParams = useSearchParams();
   const orderId =
@@ -53,23 +53,33 @@ export default function Page() {
   }, []);
 
   const handleContinue = () => {
+    dispatch(resetOrderState());
     dispatch(resetCart());
+    router.push("/");
   };
+
+  // Redirect if cart is empty
+  useEffect(() => {
+    if (cartItems?.length === 0) {
+      router.push("/");
+    }
+  }, [cartItems, router]);
 
   return (
     <div className="min-h-screen bg-neutral-50">
       {/* Header */}
       <header className="bg-white border-b border-neutral-200">
-        <div className="container mx-auto p-6 flex justify-between items-center">
-          <Link href="/">
-            <Image
-              src="/logo2x-light.webp"
-              width={500}
-              height={500}
-              alt="logo"
-              className="w-36"
-            />
-          </Link>
+        <div
+          className="container mx-auto p-6 flex justify-between items-center"
+          onClick={handleContinue}
+        >
+          <Image
+            src="/logo2x-light.webp"
+            width={500}
+            height={500}
+            alt="logo"
+            className="w-36"
+          />
         </div>
       </header>
 
@@ -88,11 +98,10 @@ export default function Page() {
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Button
-              asChild
               className="bg-neutral-800 hover:bg-neutral-900"
               onClick={handleContinue}
             >
-              <Link href="/">Continue Shopping</Link>
+              Continue Shopping
             </Button>
             <Button variant="outline" className="flex items-center gap-2">
               <Printer size={16} />

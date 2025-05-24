@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ActionState, AsyncState } from "../../helper/constants";
 import { Product } from "../../types/product";
@@ -62,6 +63,19 @@ export interface AppState {
   customerDelivery: CustomerDelivery;
   shippingMethod: ShippingMethod;
   paymentMethod: PaymentMethod;
+
+  // Order management
+  createOrderApiStatus: string;
+  createOrderError: string;
+  lastCreatedOrder: any | null;
+
+  // Razorpay integration
+  createRazorpayOrderApiStatus: string;
+  createRazorpayOrderError: string;
+  razorpayOrder: any | null;
+
+  verifyPaymentApiStatus: string;
+  verifyPaymentError: string;
 }
 
 const initialState: AppState = {
@@ -96,6 +110,18 @@ const initialState: AppState = {
   paymentMethod: {
     method: "Razorpay Secure",
   },
+
+  createOrderApiStatus: AsyncState.IDLE,
+  createOrderError: "",
+  lastCreatedOrder: null,
+
+  // Initialize Razorpay states
+  createRazorpayOrderApiStatus: AsyncState.IDLE,
+  createRazorpayOrderError: "",
+  razorpayOrder: null,
+
+  verifyPaymentApiStatus: AsyncState.IDLE,
+  verifyPaymentError: "",
 };
 
 const slice = createSlice({
@@ -234,6 +260,12 @@ const slice = createSlice({
     updatePaymentMethod: (state, action: PayloadAction<PaymentMethod>) => {
       state.paymentMethod = action.payload;
     },
+
+    resetOrderState: (state) => {
+      state.createOrderApiStatus = AsyncState.IDLE;
+      state.createOrderError = "";
+      state.lastCreatedOrder = null;
+    },
   },
   extraReducers: (builder) => {
     // Get Product By Slug
@@ -254,6 +286,69 @@ const slice = createSlice({
         state.currentProductApiStatus = AsyncState.REJECTED;
       }
     );
+
+    // Create Order
+    builder.addCase(Actions.createOrder + ActionState.PENDING, (state) => {
+      state.createOrderApiStatus = AsyncState.PENDING;
+    });
+    builder.addCase(
+      Actions.createOrder + ActionState.FULFILLED,
+      (state, action: PayloadAction<any>) => {
+        state.lastCreatedOrder = action.payload;
+        state.createOrderApiStatus = AsyncState.FULFILLED;
+      }
+    );
+    builder.addCase(
+      Actions.createOrder + ActionState.REJECTED,
+      (state, action: PayloadAction<string>) => {
+        state.createOrderError = action.payload;
+        state.createOrderApiStatus = AsyncState.REJECTED;
+      }
+    );
+
+    // Create Razorpay Order
+    builder.addCase(
+      Actions.createRazorpayOrder + ActionState.PENDING,
+      (state) => {
+        state.createRazorpayOrderApiStatus = AsyncState.PENDING;
+      }
+    );
+    builder.addCase(
+      Actions.createRazorpayOrder + ActionState.FULFILLED,
+      (state, action: PayloadAction<any>) => {
+        state.razorpayOrder = action.payload;
+        state.createRazorpayOrderApiStatus = AsyncState.FULFILLED;
+      }
+    );
+    builder.addCase(
+      Actions.createRazorpayOrder + ActionState.REJECTED,
+      (state, action: PayloadAction<string>) => {
+        state.createRazorpayOrderError = action.payload;
+        state.createRazorpayOrderApiStatus = AsyncState.REJECTED;
+      }
+    );
+
+    // Verify Razorpay Payment
+    builder.addCase(
+      Actions.verifyRazorpayPayment + ActionState.PENDING,
+      (state) => {
+        state.verifyPaymentApiStatus = AsyncState.PENDING;
+      }
+    );
+    builder.addCase(
+      Actions.verifyRazorpayPayment + ActionState.FULFILLED,
+      (state, action: PayloadAction<any>) => {
+        state.lastCreatedOrder = action.payload.order;
+        state.verifyPaymentApiStatus = AsyncState.FULFILLED;
+      }
+    );
+    builder.addCase(
+      Actions.verifyRazorpayPayment + ActionState.REJECTED,
+      (state, action: PayloadAction<string>) => {
+        state.verifyPaymentError = action.payload;
+        state.verifyPaymentApiStatus = AsyncState.REJECTED;
+      }
+    );
   },
 });
 
@@ -268,8 +363,16 @@ export const {
   updateShippingMethod,
   updatePaymentMethod,
   resetCart,
+  resetOrderState,
 } = slice.actions;
 
 export const getProductBySlug = createAction<string>(Actions.getProductBySlug);
+export const createOrder = createAction<any>(Actions.createOrder);
+export const createRazorpayOrder = createAction<any>(
+  Actions.createRazorpayOrder
+);
+export const verifyRazorpayPayment = createAction<any>(
+  Actions.verifyRazorpayPayment
+);
 
 export const AppReducer = slice.reducer;

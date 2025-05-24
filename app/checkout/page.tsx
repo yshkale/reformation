@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { CircleCheck, MonitorCheck, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import { OrderSummary } from "./components/OrderSummary";
@@ -13,8 +13,11 @@ import { Separator } from "../components/ui/separator";
 
 import { useRouter } from "next/navigation";
 import {
+  createOrder,
+  createRazorpayOrder,
   updatePaymentMethod,
   updateShippingMethod,
+  verifyRazorpayPayment,
 } from "../store/App/app.slice";
 
 export default function Page() {
@@ -32,6 +35,24 @@ export default function Page() {
   );
   const shippingMethod = useSelector((state: any) => state.app.shippingMethod);
   const paymentMethod = useSelector((state: any) => state.app.paymentMethod);
+
+  const createOrderApiStatus = useSelector(
+    (state: any) => state.app.createOrderApiStatus
+  );
+  const createOrderError = useSelector(
+    (state: any) => state.app.createOrderError
+  );
+  const lastCreatedOrder = useSelector(
+    (state: any) => state.app.lastCreatedOrder
+  );
+
+  const razorpayOrder = useSelector((state: any) => state.app.razorpayOrder);
+  const createRazorpayOrderApiStatus = useSelector(
+    (state: any) => state.app.createRazorpayOrderApiStatus
+  );
+  const verifyPaymentApiStatus = useSelector(
+    (state: any) => state.app.verifyPaymentApiStatus
+  );
 
   // Set default shipping method when component mounts (if needed)
   const selectExpressShipping = () => {
@@ -78,27 +99,96 @@ export default function Page() {
       cartTotal,
     };
 
-    // For demonstration purposes, just log the data
-    console.log("Order data ready for submission:", orderData);
+    dispatch(createRazorpayOrder(orderData));
+  };
 
-    // Simulate payment process
-    setIsProcessing(true);
+  // Handle Razorpay order creation
+  useEffect(() => {
+    if (createRazorpayOrderApiStatus === "fulfilled" && razorpayOrder) {
+      // Initialize Razorpay payment
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: razorpayOrder.order.amount,
+        currency: razorpayOrder.order.currency,
+        name: "Reformation", // Replace with your store name
+        description: "Order Payment",
+        order_id: razorpayOrder.order.id,
+        handler: function (response: any) {
+          // Check if payment was successful
+          if (response.razorpay_payment_id) {
+            // Payment successful, verify it
+            dispatch(
+              verifyRazorpayPayment({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                orderData: razorpayOrder.orderData,
+              })
+            );
+          } else {
+            // Payment failed
+            alert("Payment failed. Please try again.");
+            setIsProcessing(false);
+          }
+        },
+        prefill: {
+          name: `${customerDelivery.firstName} ${customerDelivery.lastName}`,
+          email: customerContact.email,
+          contact: customerDelivery.phone,
+        },
+        theme: {
+          color: "#000000",
+        },
+        modal: {
+          ondismiss: function () {
+            setIsProcessing(false);
+          },
+        },
+      };
 
-    try {
-      // Simulate API call to payment gateway
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const razorpay = new (window as any).Razorpay(options);
+      razorpay.open();
+    }
 
-      // Generate a random order ID
-      const orderId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
-
-      // Redirect to success page
-      router.push(`/order/success?orderId=${orderId}`);
-    } catch (error) {
-      console.error("Payment failed:", error);
-      alert("Payment processing failed. Please try again.");
+    if (createRazorpayOrderApiStatus === "rejected") {
+      alert("Failed to create order. Please try again.");
       setIsProcessing(false);
     }
-  };
+  }, [
+    createRazorpayOrderApiStatus,
+    razorpayOrder,
+    dispatch,
+    customerContact,
+    customerDelivery,
+  ]);
+
+  // Handle payment verification
+  useEffect(() => {
+    if (verifyPaymentApiStatus === "fulfilled" && lastCreatedOrder) {
+      // Success! Redirect to success page
+      router.push(`/order/success?orderId=${lastCreatedOrder.orderId}`);
+    }
+
+    if (verifyPaymentApiStatus === "rejected") {
+      alert("Payment verification failed. Please contact support.");
+      setIsProcessing(false);
+    }
+  }, [verifyPaymentApiStatus, lastCreatedOrder, router]);
+
+  // Update the isProcessing state
+  useEffect(() => {
+    setIsProcessing(
+      createRazorpayOrderApiStatus === "pending" ||
+        verifyPaymentApiStatus === "pending"
+    );
+  }, [createRazorpayOrderApiStatus, verifyPaymentApiStatus]);
+
+  // Redirect if cart is empty
+  useEffect(() => {
+    if (cartItems?.length === 0) {
+      router.push("/");
+    }
+  }, [cartItems, router]);
 
   return (
     <main className="bg-neutral-100 min-h-screen">

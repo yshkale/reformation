@@ -14,6 +14,7 @@ import { Button } from "./ui/button";
 import { CartItemRenderer } from "./CartItemRenderer";
 import { useRouter } from "next/navigation";
 import { Checkbox } from "./ui/checkbox";
+import { useState } from "react";
 
 export const Cart = () => {
   const dispatch = useDispatch();
@@ -22,6 +23,8 @@ export const Cart = () => {
   const cartState = useSelector((state: any) => state.app.cartState);
   const cart = useSelector((state: any) => state.app.cartItems);
   const cartTotal = useSelector((state: any) => state.app.cartTotal);
+
+  const [termsConsent, setTermsConsent] = useState(false);
 
   const closeCart = () => {
     dispatch(setCartState("closed"));
@@ -47,6 +50,10 @@ export const Cart = () => {
   const handleCheckout = () => {
     router.push("/checkout");
     closeCart();
+  };
+
+  const handleCheckedChange = (checked: boolean) => {
+    setTermsConsent(checked);
   };
 
   return (
@@ -98,10 +105,13 @@ export const Cart = () => {
               )}
             </section>
             {cart.length !== 0 && (
-              <section className="text-xs text-center space-y-2 mx-6 mb-8">
+              <section className="text-xs text-center space-y-1 mx-6 mb-8">
                 <p>Taxes and shipping calculated at checkout</p>
                 <div className="flex items-center space-x-2 justify-center">
-                  <Checkbox />
+                  <Checkbox
+                    checked={termsConsent}
+                    onCheckedChange={handleCheckedChange}
+                  />
                   <p>
                     I agree with the{" "}
                     <span className="border-b border-neutral-400">
@@ -110,7 +120,11 @@ export const Cart = () => {
                   </p>
                 </div>
 
-                <Button className="w-full mt-3" onClick={handleCheckout}>
+                <Button
+                  className="w-full mt-3"
+                  onClick={handleCheckout}
+                  disabled={!termsConsent}
+                >
                   Checkout &nbsp; &middot; &nbsp; ${cartTotal}
                 </Button>
               </section>

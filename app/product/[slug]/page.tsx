@@ -30,7 +30,7 @@ export default function Page() {
   const dispatch = useDispatch();
   const params = useParams();
 
-  const slug: any = params.slug;
+  const slug: any = params?.slug;
 
   const product = useSelector((state: any) => state.app.currentProduct);
 
