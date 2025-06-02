@@ -3,10 +3,10 @@ import { getProductBySlug } from "../../../lib/queries/products";
 
 export async function GET(
   request: NextRequest,
-  context: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = context.params;
+    const { slug } = await params;
 
     if (!slug) {
       return NextResponse.json(
@@ -24,10 +24,10 @@ export async function GET(
     if (!product) {
       return NextResponse.json(
         {
-          error: "Product does not exists!",
+          error: "Product does not exist!",
         },
         {
-          status: 400,
+          status: 404, // Changed to 404 for "not found"
         }
       );
     }
