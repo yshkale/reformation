@@ -49,6 +49,7 @@ export interface PaymentMethod {
   method: string;
 }
 
+// Simplified AppState interface - remove redundant order states
 export interface AppState {
   cartState: "open" | "closed";
   cartItems: CartItem[];
@@ -64,20 +65,20 @@ export interface AppState {
   shippingMethod: ShippingMethod;
   paymentMethod: PaymentMethod;
 
-  // Order management
-  createOrderApiStatus: string;
-  createOrderError: string;
-  lastCreatedOrder: any | null;
-
-  // Razorpay integration
+  // Only keep Razorpay order states (remove regular order states)
   createRazorpayOrderApiStatus: string;
   createRazorpayOrderError: string;
   razorpayOrder: any | null;
 
+  // Payment verification
   verifyPaymentApiStatus: string;
   verifyPaymentError: string;
+
+  // Final order after successful payment
+  lastCreatedOrder: any | null;
 }
 
+// Updated initial state
 const initialState: AppState = {
   cartState: "closed",
   cartItems: [],
@@ -87,7 +88,6 @@ const initialState: AppState = {
   currentProductApiStatus: AsyncState.IDLE,
   currentProductError: "",
 
-  // Initialize customer data
   customerContact: {
     email: "",
     receiveOffers: false,
@@ -111,17 +111,14 @@ const initialState: AppState = {
     method: "Razorpay Secure",
   },
 
-  createOrderApiStatus: AsyncState.IDLE,
-  createOrderError: "",
-  lastCreatedOrder: null,
-
-  // Initialize Razorpay states
+  // Remove regular order states, keep only Razorpay flow
   createRazorpayOrderApiStatus: AsyncState.IDLE,
   createRazorpayOrderError: "",
   razorpayOrder: null,
 
   verifyPaymentApiStatus: AsyncState.IDLE,
   verifyPaymentError: "",
+  lastCreatedOrder: null, // This gets set after successful payment verification
 };
 
 const slice = createSlice({
@@ -261,9 +258,12 @@ const slice = createSlice({
       state.paymentMethod = action.payload;
     },
 
-    resetOrderState: (state) => {
-      state.createOrderApiStatus = AsyncState.IDLE;
-      state.createOrderError = "";
+    resetPaymentState: (state) => {
+      state.createRazorpayOrderApiStatus = AsyncState.IDLE;
+      state.createRazorpayOrderError = "";
+      state.razorpayOrder = null;
+      state.verifyPaymentApiStatus = AsyncState.IDLE;
+      state.verifyPaymentError = "";
       state.lastCreatedOrder = null;
     },
   },
@@ -284,25 +284,6 @@ const slice = createSlice({
       (state, action: PayloadAction<string>) => {
         state.currentProductError = action.payload;
         state.currentProductApiStatus = AsyncState.REJECTED;
-      }
-    );
-
-    // Create Order
-    builder.addCase(Actions.createOrder + ActionState.PENDING, (state) => {
-      state.createOrderApiStatus = AsyncState.PENDING;
-    });
-    builder.addCase(
-      Actions.createOrder + ActionState.FULFILLED,
-      (state, action: PayloadAction<any>) => {
-        state.lastCreatedOrder = action.payload;
-        state.createOrderApiStatus = AsyncState.FULFILLED;
-      }
-    );
-    builder.addCase(
-      Actions.createOrder + ActionState.REJECTED,
-      (state, action: PayloadAction<string>) => {
-        state.createOrderError = action.payload;
-        state.createOrderApiStatus = AsyncState.REJECTED;
       }
     );
 
@@ -363,11 +344,10 @@ export const {
   updateShippingMethod,
   updatePaymentMethod,
   resetCart,
-  resetOrderState,
+  resetPaymentState,
 } = slice.actions;
 
 export const getProductBySlug = createAction<string>(Actions.getProductBySlug);
-export const createOrder = createAction<any>(Actions.createOrder);
 export const createRazorpayOrder = createAction<any>(
   Actions.createRazorpayOrder
 );

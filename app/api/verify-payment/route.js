@@ -1,4 +1,3 @@
-// app/api/verify-payment/route.js
 import crypto from "crypto";
 
 export async function POST(request) {
@@ -10,11 +9,24 @@ export async function POST(request) {
       orderData,
     } = await request.json();
 
+    // Validate required fields
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return Response.json(
+        {
+          success: false,
+          error: "Missing required payment verification data",
+        },
+        { status: 400 }
+      );
+    }
+
     // Create the signature to verify
     const generated_signature = crypto
-      .createHmac("sha256", process.env.NEXT_PUBLIC_RAZORPAY_SECRET)
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET) // Remove NEXT_PUBLIC_ prefix
       .update(razorpay_order_id + "|" + razorpay_payment_id)
       .digest("hex");
+
+    console.log("Verifying payment signature...");
 
     if (generated_signature === razorpay_signature) {
       // Payment is verified, save order to database
@@ -35,6 +47,7 @@ export async function POST(request) {
         message: "Payment verified successfully",
       });
     } else {
+      console.error("Payment signature verification failed");
       return Response.json(
         {
           success: false,
@@ -48,7 +61,7 @@ export async function POST(request) {
     return Response.json(
       {
         success: false,
-        error: error.message,
+        error: error.message || "Payment verification failed",
       },
       { status: 500 }
     );

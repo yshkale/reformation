@@ -13,7 +13,6 @@ import { Separator } from "../components/ui/separator";
 
 import { useRouter } from "next/navigation";
 import {
-  createOrder,
   createRazorpayOrder,
   updatePaymentMethod,
   updateShippingMethod,
@@ -36,9 +35,6 @@ export default function Page() {
   const shippingMethod = useSelector((state: any) => state.app.shippingMethod);
   const paymentMethod = useSelector((state: any) => state.app.paymentMethod);
 
-  const createOrderApiStatus = useSelector(
-    (state: any) => state.app.createOrderApiStatus
-  );
   const createOrderError = useSelector(
     (state: any) => state.app.createOrderError
   );
@@ -189,6 +185,15 @@ export default function Page() {
       router.push("/");
     }
   }, [cartItems, router]);
+
+  // Add this useEffect for better error tracking
+  useEffect(() => {
+    if (createRazorpayOrderApiStatus === "rejected") {
+      console.error("Razorpay order creation failed:", createOrderError);
+      alert(`Failed to create order: ${createOrderError || "Unknown error"}`);
+      setIsProcessing(false);
+    }
+  }, [createRazorpayOrderApiStatus, createOrderError]);
 
   return (
     <main className="bg-neutral-100 min-h-screen">
