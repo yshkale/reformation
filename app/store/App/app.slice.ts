@@ -125,6 +125,8 @@ const slice = createSlice({
   name: "app",
   initialState,
   reducers: {
+    resetAppState: () => initialState,
+
     setCartState: (state, action: PayloadAction<"open" | "closed">) => {
       state.cartState = action.payload;
     },
@@ -345,6 +347,7 @@ export const {
   updatePaymentMethod,
   resetCart,
   resetPaymentState,
+  resetAppState,
 } = slice.actions;
 
 export const getProductBySlug = createAction<string>(Actions.getProductBySlug);

@@ -16,7 +16,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Separator } from "../../components/ui/separator";
-import { resetCart } from "../../store/App/app.slice";
+import { resetAppState, resetCart } from "../../store/App/app.slice";
 
 export default function Page() {
   const dispatch = useDispatch();
@@ -53,6 +53,7 @@ export default function Page() {
   }, []);
 
   const handleContinue = () => {
+    dispatch(resetAppState());
     dispatch(resetCart());
     router.push("/");
   };
