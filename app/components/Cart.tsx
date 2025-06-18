@@ -81,7 +81,7 @@ export const Cart = () => {
               <h3 className="uppercase">Cart</h3>
               <XIcon size={19} onClick={closeCart} className="cursor-pointer" />
             </div>
-            <section className="m-6 h-max mb-auto">
+            <section className="m-6 h-max mb-auto overflow-y-auto">
               {cart?.length === 0 ? (
                 <div className="w-full flex flex-col space-y-4 items-center justify-center mt-60">
                   <ShoppingBasketIcon strokeWidth={1} size={60} />
@@ -105,7 +105,7 @@ export const Cart = () => {
               )}
             </section>
             {cart.length !== 0 && (
-              <section className="text-xs text-center space-y-1 mx-6 mb-8">
+              <section className="text-xs text-center space-y-1 mx-6 mb-8 border-t border-neutral-200 pt-4">
                 <p>Taxes and shipping calculated at checkout</p>
                 <div className="flex items-center space-x-2 justify-center">
                   <Checkbox

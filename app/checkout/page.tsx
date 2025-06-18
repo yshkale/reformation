@@ -211,96 +211,101 @@ export default function Page() {
         </Link>
       </div>
 
-      <OrderSummary cartItems={cartItems} cartTotal={cartTotal} />
+      <section className="lg:flex lg:flex-row-reverse lg:border-t lg:border-neutral-200 lg:gap-10 lg:justify-center">
+        <OrderSummary cartItems={cartItems} cartTotal={cartTotal} />
+        <OrderForm />
+      </section>
 
-      <OrderForm />
+      <section className="lg:w-full">
+        <div className="lg:ml-72 lg:flex lg:flex-col lg:justify-center lg:w-2/6">
+          <div className="mx-4 space-y-2">
+            <h3 className="font-semibold text-lg">Shipping method</h3>
 
-      <div className="mx-4 space-y-2">
-        <h3 className="font-semibold text-lg">Shipping method</h3>
-
-        <div
-          className="mb-6 py-4 space-y-3 flex items-center justify-between text-sm border border-neutral-900 rounded-md px-4 cursor-pointer"
-          onClick={selectExpressShipping}
-        >
-          <div className="flex space-x-2 items-center mb-0">
-            <CircleCheck fill="#000" className="text-white" size={20} />
-            <p>Express Shipping</p>
+            <div
+              className="mb-6 py-4 space-y-3 flex items-center justify-between text-sm border border-neutral-900 rounded-md px-4 cursor-pointer"
+              onClick={selectExpressShipping}
+            >
+              <div className="flex space-x-2 items-center mb-0">
+                <CircleCheck fill="#000" className="text-white" size={20} />
+                <p>Express Shipping</p>
+              </div>
+              <p className="text-xs text-neutral-500">FREE</p>
+            </div>
           </div>
-          <p className="text-xs text-neutral-500">FREE</p>
-        </div>
-      </div>
 
-      <div className="mx-4 space-y-2">
-        <h3 className="font-semibold text-lg">Payment</h3>
+          <div className="mx-4 space-y-2">
+            <h3 className="font-semibold text-lg">Payment</h3>
 
-        <div className="text-sm">
-          <div
-            className="flex items-center justify-between px-3 py-2 border border-neutral-950 rounded-t-md cursor-pointer"
-            onClick={selectRazorpayPayment}
-          >
-            <p className="max-w-72">
-              Razorpay Secure (UPI, Cards, Wallets, NetBanking)
-            </p>
-            <div className="flex space-x-2 items-center">
-              <Image
-                src={"/icons/visa.svg"}
-                alt="payment icon"
-                width={30}
-                height={30}
-              />
-              <Image
-                src={"/icons/mastercard.svg"}
-                alt="payment icon"
-                width={25}
-                height={25}
-              />
-              <Image
-                src={"/icons/american-express.svg"}
-                alt="payment icon"
-                width={25}
-                height={25}
-              />
-              <div className="bg-white border border-neutral-300 px-1.5 h-6 text-xs flex items-center justify-center text-center rounded-sm">
-                <p>+18</p>
+            <div className="text-sm">
+              <div
+                className="flex items-center justify-between px-3 py-2 border border-neutral-950 rounded-t-md cursor-pointer"
+                onClick={selectRazorpayPayment}
+              >
+                <p className="max-w-72">
+                  Razorpay Secure (UPI, Cards, Wallets, NetBanking)
+                </p>
+                <div className="flex space-x-2 items-center">
+                  <Image
+                    src={"/icons/visa.svg"}
+                    alt="payment icon"
+                    width={30}
+                    height={30}
+                  />
+                  <Image
+                    src={"/icons/mastercard.svg"}
+                    alt="payment icon"
+                    width={25}
+                    height={25}
+                  />
+                  <Image
+                    src={"/icons/american-express.svg"}
+                    alt="payment icon"
+                    width={25}
+                    height={25}
+                  />
+                  <div className="bg-white border border-neutral-300 px-1.5 h-6 text-xs flex items-center justify-center text-center rounded-sm">
+                    <p>+18</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-b border-x border-neutral-400 rounded-b-md p-2 flex flex-col justify-center items-center space-y-1">
+                <MonitorCheck
+                  className="text-neutral-500"
+                  size={90}
+                  strokeWidth={0.5}
+                />
+                <p className="text-center px-4 text-xs">
+                  After clicking &apos;Pay now&apos;, you will be redirected to
+                  Razorpay Secure (UPI, Cards, Wallets, NetBanking) to complete
+                  your purchase securely.
+                </p>
               </div>
             </div>
           </div>
 
-          <div className="border-b border-x border-neutral-400 rounded-b-md p-2 flex flex-col justify-center items-center space-y-1">
-            <MonitorCheck
-              className="text-neutral-500"
-              size={90}
-              strokeWidth={0.5}
-            />
-            <p className="text-center px-4 text-xs">
-              After clicking &apos;Pay now&apos;, you will be redirected to
-              Razorpay Secure (UPI, Cards, Wallets, NetBanking) to complete your
-              purchase securely.
-            </p>
+          <div className="mx-4 mt-10 mb-6">
+            <Button
+              className="px-6 rounded-sm w-full h-12"
+              onClick={handlePayNow}
+              disabled={isProcessing}
+            >
+              {isProcessing ? (
+                <>
+                  <span className="animate-pulse">Processing</span>
+                  <span className="ml-2">...</span>
+                </>
+              ) : (
+                "Pay now"
+              )}
+            </Button>
           </div>
         </div>
-      </div>
-
-      <div className="mx-4 mt-10 mb-6">
-        <Button
-          className="px-6 rounded-sm w-full h-12"
-          onClick={handlePayNow}
-          disabled={isProcessing}
-        >
-          {isProcessing ? (
-            <>
-              <span className="animate-pulse">Processing</span>
-              <span className="ml-2">...</span>
-            </>
-          ) : (
-            "Pay now"
-          )}
-        </Button>
-      </div>
+      </section>
 
       <Separator />
 
-      <div className="flex flex-wrap gap-2 p-4 text-xs">
+      <div className="flex flex-wrap gap-2 p-4 text-xs lg:ml-72">
         <p className="underline whitespace-nowrap">Refund policy</p>
         <p className="underline whitespace-nowrap">Shipping policy</p>
         <p className="underline whitespace-nowrap">Privacy policy</p>

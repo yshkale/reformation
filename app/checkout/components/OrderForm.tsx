@@ -51,7 +51,7 @@ export const OrderForm = () => {
   };
 
   return (
-    <form className="mx-4 my-6 text-sm space-y-6">
+    <form className="mx-4 my-6 text-sm space-y-6 lg:w-3/8 lg:ml-12">
       <div className="space-y-2">
         <h3 className="font-semibold text-lg">Contact</h3>
 

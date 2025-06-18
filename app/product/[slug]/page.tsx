@@ -19,7 +19,7 @@ import {
   getProductBySlug,
   setCartState,
 } from "../../store/App/app.slice";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Separator } from "../../components/ui/separator";
 
 interface SelectedVariant {
@@ -30,6 +30,7 @@ interface SelectedVariant {
 export default function Page() {
   const dispatch = useDispatch();
   const params = useParams();
+  const router = useRouter();
 
   const slug: any = params?.slug;
 
@@ -105,6 +106,23 @@ export default function Page() {
     });
   };
 
+  const handleCheckout = () => {
+    dispatch(
+      addToCart({
+        productId: product._id,
+        quantity,
+        variants: selectedVariants,
+        productInfo: {
+          name: product.name,
+          price: product.price,
+          compareWithPrice: product.comparePrice,
+          thumbnail: product.thumbnail,
+        },
+      })
+    );
+    router.push("/checkout");
+  };
+
   return (
     <main>
       <Header />
@@ -112,7 +130,7 @@ export default function Page() {
       <div className="mx-3 mb-12 lg:mx-12">
         <Breadcrumb links={links} className="my-4" />
 
-        <section className="lg:flex lg:justify-between">
+        <section className="lg:flex lg:justify-between lg:mt-6">
           <ImageCarousel images={product?.images} />
           <div className="lg:ml-12 lg:mr-32 lg:mt-12">
             <h2 className="font-semibold text-2xl">{product?.name}</h2>
@@ -174,7 +192,10 @@ export default function Page() {
               </Button>
             </div>
 
-            <Button className="w-full mt-3 py-5 cursor-pointer tracking-wider text-sm">
+            <Button
+              className="w-full mt-3 py-5 cursor-pointer tracking-wider text-sm"
+              onClick={handleCheckout}
+            >
               BUY IT NOW
             </Button>
 
@@ -205,7 +226,7 @@ export default function Page() {
 
         <Separator className="mt-8" />
 
-        <section className="lg:mx-42">
+        <section className="lg:mx-32">
           <div className="mt-14 lg:flex">
             <div className="relative h-[30rem]">
               <Image
