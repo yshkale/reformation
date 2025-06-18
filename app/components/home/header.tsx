@@ -16,7 +16,7 @@ export const Header = () => {
     dispatch(setCartState("open"));
   };
   return (
-    <header className="py-6 px-4 flex items-center justify-between border-b border-neutral-200">
+    <header className="py-6 px-4 lg:px-8 flex items-center justify-between border-b border-neutral-200">
       <Link href={"/"}>
         <Image
           src="/logo2x-light.webp"

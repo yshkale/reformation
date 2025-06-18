@@ -20,6 +20,7 @@ import {
   setCartState,
 } from "../../store/App/app.slice";
 import { useParams } from "next/navigation";
+import { Separator } from "../../components/ui/separator";
 
 interface SelectedVariant {
   variantName: string;
@@ -108,108 +109,130 @@ export default function Page() {
     <main>
       <Header />
 
-      <div className="mx-3 mb-12">
+      <div className="mx-3 mb-12 lg:mx-12">
         <Breadcrumb links={links} className="my-4" />
 
-        <ImageCarousel images={product?.images} />
-        <h2 className="font-semibold text-2xl">{product?.name}</h2>
-        <div className="flex items-center space-x-2 mt-1">
-          {product?.comparePrice && (
-            <p className="uppercase line-through text-neutral-600">
-              {product?.comparePrice}
+        <section className="lg:flex lg:justify-between">
+          <ImageCarousel images={product?.images} />
+          <div className="lg:ml-12 lg:mr-32 lg:mt-12">
+            <h2 className="font-semibold text-2xl">{product?.name}</h2>
+            <div className="flex items-center space-x-2 mt-1">
+              {product?.comparePrice && (
+                <p className="uppercase line-through text-neutral-600">
+                  {product?.comparePrice}
+                </p>
+              )}
+              <p
+                className={cn(
+                  "uppercase font-medium",
+                  product?.comparePrice && "text-rose-700"
+                )}
+              >
+                {product?.price}
+              </p>
+
+              <p className="bg-red-700 text-white text-xs px-3 py-1 rounded-full">
+                Save 15%
+              </p>
+            </div>
+            <p className="text-xs text-neutral-400 mt-2">
+              Shipping calculated at checkout.
             </p>
-          )}
-          <p
-            className={cn(
-              "uppercase font-medium",
-              product?.comparePrice && "text-rose-700"
+
+            {product?.rating && (
+              <div className="flex flex-row mt-1 space-x-0.5">
+                {Array.from({ length: product.rating })?.map((_, i) => {
+                  return (
+                    <Star
+                      key={i}
+                      className="text-amber-500 fill-amber-500"
+                      size={14}
+                    />
+                  );
+                })}
+                <p className="text-xs ml-2">12 Reviews</p>
+              </div>
             )}
-          >
-            {product?.price}
-          </p>
 
-          <p className="bg-red-700 text-white text-xs px-3 py-1 rounded-full">
-            Save 15%
-          </p>
-        </div>
-        <p className="text-xs text-neutral-400 mt-2">
-          Shipping calculated at checkout.
-        </p>
+            <p className="mt-4 text-sm lg:max-w-4xl">{product?.description}</p>
 
-        {product?.rating && (
-          <div className="flex flex-row mt-1 space-x-0.5">
-            {Array.from({ length: product.rating })?.map((_, i) => {
-              return (
-                <Star
-                  key={i}
-                  className="text-amber-500 fill-amber-500"
-                  size={14}
-                />
-              );
-            })}
-            <p className="text-xs ml-2">12 Reviews</p>
+            <div className="mt-7 space-y-5">
+              <VariantSelector
+                variants={product?.variants}
+                handleVariantClick={handleVariantClick}
+                selectedVariants={selectedVariants}
+              />
+            </div>
+
+            <div className="mt-10 flex items-center space-x-2">
+              <QuantitySelector quantity={quantity} setQuantity={setQuantity} />
+              <Button
+                className="flex-grow uppercase text-sm tracking-widest bg-transparent text-black border py-4.5 border-neutral-900 hover:bg-black hover:text-white cursor-pointer"
+                onClick={handleAddToCart}
+              >
+                Add to Cart
+              </Button>
+            </div>
+
+            <Button className="w-full mt-3 py-5 cursor-pointer tracking-wider text-sm">
+              BUY IT NOW
+            </Button>
+
+            <div className="flex space-x-4 mt-4">
+              <Facebook
+                className="fill-neutral-200"
+                strokeWidth={1.5}
+                size={18}
+              />
+              <Twitter
+                className="fill-neutral-200"
+                strokeWidth={1.5}
+                size={18}
+              />
+              <InstagramIcon
+                className="fill-neutral-200"
+                strokeWidth={1.5}
+                size={18}
+              />
+              <Linkedin
+                className="fill-neutral-200"
+                strokeWidth={1.5}
+                size={18}
+              />
+            </div>
           </div>
-        )}
+        </section>
 
-        <p className="mt-4 text-sm">{product?.description}</p>
+        <Separator className="mt-8" />
 
-        <div className="mt-7 space-y-5">
-          <VariantSelector
-            variants={product?.variants}
-            handleVariantClick={handleVariantClick}
-            selectedVariants={selectedVariants}
-          />
-        </div>
+        <section className="lg:mx-42">
+          <div className="mt-14 lg:flex">
+            <div className="relative h-[30rem]">
+              <Image
+                src={"/images/marketing-banner-product-1.webp"}
+                alt="marketing image"
+                width={500}
+                height={500}
+                quality={100}
+                className="object-cover object-center min-w-2/4 h-full"
+              />
+            </div>
 
-        <div className="mt-10 flex items-center space-x-2">
-          <QuantitySelector quantity={quantity} setQuantity={setQuantity} />
-          <Button
-            className="flex-grow uppercase text-sm tracking-widest bg-transparent text-black border py-4.5 border-neutral-900 hover:bg-black hover:text-white cursor-pointer"
-            onClick={handleAddToCart}
-          >
-            Add to Cart
-          </Button>
-        </div>
-
-        <Button className="w-full mt-3 py-5 cursor-pointer tracking-wider text-sm">
-          BUY IT NOW
-        </Button>
-
-        <div className="flex space-x-4 mt-4">
-          <Facebook className="fill-neutral-200" strokeWidth={1.5} size={18} />
-          <Twitter className="fill-neutral-200" strokeWidth={1.5} size={18} />
-          <InstagramIcon
-            className="fill-neutral-200"
-            strokeWidth={1.5}
-            size={18}
-          />
-          <Linkedin className="fill-neutral-200" strokeWidth={1.5} size={18} />
-        </div>
-
-        <div className="mt-14">
-          <div className="relative h-[30rem]">
-            <Image
-              src={"/images/marketing-banner-product-1.webp"}
-              alt="marketing image"
-              width={500}
-              height={500}
-              quality={100}
-              className="object-cover object-center w-full h-full"
-            />
+            <div className="p-6 space-y-2 lg:max-w-2/4">
+              <h3 className="text-3xl font-semibold lg:text-7xl">
+                Elegance Redefined.
+              </h3>
+              <p className="text-sm text-neutral-800 lg:text-base">
+                Elevate your evening with the timeless elegance of the Luna Silk
+                Evening Gown. Crafted from luxurious silk, this gown drapes
+                beautifully, accentuating your silhouette with a sophisticated
+                charm.
+              </p>
+            </div>
           </div>
 
-          <div className="p-6 space-y-2">
-            <h3 className="text-3xl font-semibold">Elegance Redefined.</h3>
-            <p className="text-sm text-neutral-800">
-              Elevate your evening with the timeless elegance of the Luna Silk
-              Evening Gown. Crafted from luxurious silk, this gown drapes
-              beautifully, accentuating your silhouette with a sophisticated
-              charm.
-            </p>
-          </div>
-        </div>
-
-        <SocialFeed />
+          <SocialFeed />
+        </section>
       </div>
 
       <Footer />

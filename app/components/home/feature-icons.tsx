@@ -39,11 +39,14 @@ export const FeatureIcons = () => {
           display: none; /* Chrome, Safari and Opera */
         }
       `}</style>
-      <div className="mx-3 my-8 flex space-x-8 hide-scrollbar">
+      <div className="mx-3 my-8 flex space-x-8 hide-scrollbar lg:grid lg:grid-cols-4 lg:items-center lg:justify-center">
         {featureData?.length > 0 &&
           featureData.map((feature, index) => {
             return (
-              <div className="flex space-x-4 items-center" key={index}>
+              <div
+                className="flex space-x-4 items-center lg:justify-center"
+                key={index}
+              >
                 <div className="border border-neutral-300 rounded-full p-4 w-fit">
                   {feature.icon}
                 </div>

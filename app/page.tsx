@@ -19,7 +19,7 @@ export default function Home() {
       <Header />
       <Hero />
 
-      <section className="mx-3">
+      <section className="mx-3 lg:mx-8">
         <IntroText
           title="New Arrivals"
           description="Discover the latest ready-to-wear dresses."
@@ -27,7 +27,7 @@ export default function Home() {
 
         <CollectionOverview products={products} />
 
-        <div className="space-y-8 my-10">
+        <div className="space-y-8 my-10 lg:mt-10 lg:mb-4 lg:grid lg:grid-cols-2 lg:gap-2">
           <CollectionBanner
             collectionId={"234"}
             title={"BUY NOW OR CRY LATER"}

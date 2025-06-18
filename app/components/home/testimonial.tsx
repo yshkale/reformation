@@ -58,7 +58,7 @@ export const Testimonial = () => {
         </AnimatePresence>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 items-center justify-center ml-2">
+      <div className="grid grid-cols-3 gap-2 w-full ml-2 place-items-center">
         {testimonialLogos?.length > 0 &&
           testimonialLogos.map((logo, index) => {
             return (

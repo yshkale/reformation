@@ -42,7 +42,7 @@ export const SocialFeed = () => {
         }
       `}</style>
 
-      <div className="my-8">
+      <div className="my-8 lg:mt-16">
         <h3 className="text-lg font-semibold">#reformationfeed</h3>
         <p className="text-sm">send your photos now</p>
       </div>

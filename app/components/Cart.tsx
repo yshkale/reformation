@@ -71,7 +71,7 @@ export const Cart = () => {
 
           {/* Cart sidebar */}
           <motion.div
-            className="fixed top-0 right-0 w-7/8 h-full bg-white shadow-lg z-50 border-l border-t border-neutral-200 flex flex-col"
+            className="fixed top-0 right-0 w-7/8 lg:w-3/9 h-full bg-white shadow-lg z-50 border-l border-t border-neutral-200 flex flex-col"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
