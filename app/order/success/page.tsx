@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   CheckCircle,
@@ -17,8 +17,9 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Separator } from "../../components/ui/separator";
 import { resetAppState, resetCart } from "../../store/App/app.slice";
+import Loading from "./components/Loading";
 
-export default function Page() {
+function OrderSuccessPage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -328,5 +329,13 @@ export default function Page() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <OrderSuccessPage />
+    </Suspense>
   );
 }
