@@ -234,28 +234,29 @@ export default function Page() {
                         {item.productInfo?.name || `Product #${item.productId}`}
                       </p>
                       {item.variants && item.variants.length > 0 && (
-                        <p className="text-xs text-neutral-500">
-                          {item.variants
-                            ?.map((v: any) => {
-                              if (v.variantName === "COLOR") {
-                                return (
-                                  <div
-                                    key={v.variantName}
-                                    className="w-3 h-3"
-                                    style={{
-                                      backgroundColor: v.variantOption,
-                                    }}
-                                  ></div>
-                                );
-                              }
+                        <div className="text-xs text-neutral-500 flex items-center gap-2">
+                          {item.variants.map((v: any, vIndex: number) => {
+                            if (v.variantName === "COLOR") {
                               return (
-                                <p key={v.variantName} className="text-sm">
-                                  {v.variantOption}
-                                </p>
+                                <div
+                                  key={`${v.variantName}-${vIndex}`}
+                                  className="w-3 h-3 rounded-full border border-gray-300"
+                                  style={{
+                                    backgroundColor: v.variantOption,
+                                  }}
+                                />
                               );
-                            })
-                            .join(", ")}
-                        </p>
+                            }
+                            return (
+                              <span
+                                key={`${v.variantName}-${vIndex}`}
+                                className="text-sm"
+                              >
+                                {v.variantOption}
+                              </span>
+                            );
+                          })}
+                        </div>
                       )}
                       <p className="text-sm text-neutral-700">
                         Quantity: {item.quantity}
