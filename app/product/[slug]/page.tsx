@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import {
   addToCart,
   getProductBySlug,
+  resetCart,
   setCartState,
 } from "../../store/App/app.slice";
 import { useParams, useRouter } from "next/navigation";
@@ -107,6 +108,7 @@ export default function Page() {
   };
 
   const handleCheckout = () => {
+    dispatch(resetCart());
     dispatch(
       addToCart({
         productId: product._id,

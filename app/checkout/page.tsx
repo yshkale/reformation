@@ -92,7 +92,7 @@ export default function Page() {
       shippingMethod,
       paymentMethod,
       cartItems,
-      cartTotal,
+      cartTotal: cartTotal * 90,
     };
 
     dispatch(createRazorpayOrder(orderData));

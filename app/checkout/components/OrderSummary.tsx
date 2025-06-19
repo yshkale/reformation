@@ -15,18 +15,6 @@ export const OrderSummary = ({ cartItems, cartTotal }: OrderSummaryProps) => {
   // State to track if the accordion is expanded
   const [isExpanded, setIsExpanded] = useState(true);
 
-  // Order data (hardcoded for now, will be props later)
-  const orderData = {
-    subtotal: 29.99,
-    shipping: 2.99,
-    tax: 2.22,
-    total: 35.2,
-    items: [
-      { name: "T-shirt", quantity: 1, price: 19.99 },
-      { name: "Socks", quantity: 2, price: 5.0 },
-    ],
-  };
-
   // Toggle accordion expansion
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -49,7 +37,7 @@ export const OrderSummary = ({ cartItems, cartTotal }: OrderSummaryProps) => {
           </motion.div>
         </div>
 
-        <p className="font-semibold">${orderData.total.toFixed(2)}</p>
+        <p className="font-semibold">${cartTotal}</p>
       </div>
 
       {/* Expandable content */}
@@ -110,7 +98,7 @@ export const OrderSummary = ({ cartItems, cartTotal }: OrderSummaryProps) => {
               <div className="space-y-2 text-neutral-800 text-xs lg:text-sm">
                 <div className="flex justify-between items-center">
                   <p>Subtotal</p>
-                  <p>$32.07</p>
+                  <p>${cartTotal}</p>
                 </div>
                 <div className="flex justify-between items-center">
                   <p>Shipping</p>
@@ -124,7 +112,7 @@ export const OrderSummary = ({ cartItems, cartTotal }: OrderSummaryProps) => {
 
               <div className="flex justify-between items-center font-semibold">
                 <p className="text-base">Total</p>
-                <p>$32.07</p>
+                <p>${cartTotal}</p>
               </div>
             </div>
           </motion.div>
