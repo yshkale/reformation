@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛒 Reformation E-commerce
 
-## Getting Started
+A modern full-stack e-commerce web application built with **Next.js** and **MongoDB**, featuring secure **Razorpay** payment integration.
 
-First, run the development server:
+## 🔗 Live Demo
+
+[**View Live Project**](https://reformwear.vercel.app)
+
+## 🚀 Features
+
+- **Shopping Cart** - Add/remove products with variant selection
+- **Secure Payments** - Razorpay UPI, Cards, Wallets, NetBanking
+- **Order Management** - Complete order lifecycle and tracking
+- **Responsive Design** - Mobile-first responsive UI
+- **Real-time Updates** - Dynamic cart and order status
+
+## 💻 Tech Stack
+
+- **Frontend**: Next.js 14, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes, Node.js
+- **Database**: MongoDB with Mongoose
+- **State Management**: Redux Toolkit
+- **Payment**: Razorpay Integration
+- **Deployment**: Vercel
+
+## 🛠️ Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Clone repository
+git clone https://github.com/yourusername/reformation-ecommerce.git
+
+# Install dependencies
+pnpm install
+
+# Setup environment variables
+cp .env.example .env.local
+
+# Run development server
+pnpm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔧 Key Implementation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Payment Flow**: Order Creation → Razorpay Payment → Signature Verification → Database Storage
+- **State Management**: Redux for cart, user data, and order management
+- **API Routes**: RESTful endpoints for orders, payments, and products
+- **Database**: MongoDB collections for orders, products, and user data
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🎯 Learning Outcomes
 
-## Learn More
+- Full-stack development with Next.js
+- Payment gateway integration
+- Database design and MongoDB operations
+- State management with Redux
+- Responsive web design
+- API development and security
 
-To learn more about Next.js, take a look at the following resources:
+## 👨‍💻 Author
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**[Yash Kale]**  
+📧 yashnkale@gmail.com | 🔗 [LinkedIn](https://www.linkedin.com/in/yshkale/) | 💼 [Portfolio](https://yashkale.vercel.app/)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+⭐ **Star this repo if you found it helpful!**
